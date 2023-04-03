@@ -33,9 +33,14 @@ public class RacingCarService {
             this.playRound(racingCars);
         }
 
+        // 플레이 끝난 이후의 마지막 최종 이동거리만 저장
+        this.savePlayerHistory(racingCars);
+
         // 우승자 구하기
         List<String> winners = this.getWinners(racingCars);
         racingCarDao.insertPlayResult(String.join(",", winners), count);
+
+
 
         return new PlaysRes(winners, racingCars);
 
@@ -52,7 +57,6 @@ public class RacingCarService {
             for (RacingCar racingCar : racingCars) {
                 int randomNumber = random.nextInt(10);
                 racingCar.move(randomNumber);
-                racingCarDao.insertPlayHistory(racingCar);
             }
     }
 
@@ -71,6 +75,10 @@ public class RacingCarService {
         }
 
         return winners;
+    }
+
+    public void savePlayerHistory(List<RacingCar> racingCars) {
+        racingCars.forEach(racingCarDao::insertPlayHistory);
     }
 
 }
